@@ -2,11 +2,18 @@
 
 National addressing documentation for Bhutan, aligned with **ISO 19160** (Parts 1–4).
 
-## Gap analysis report (GitHub Pages)
+## Gap analysis presentation (GitHub Pages)
 
 **Live site:** https://nimaytenzin.github.io/bhutan-addressing-guidelines/
 
-Google Docs–styled web view of the **ISO 19160-2 Gap Analysis** for the Bhutan City Addressing Guideline.
+PowerPoint-style slide deck (29 slides) covering:
+1. **Part 1** — ISO 19160-2 explained (series, Good Practice, Governance, lifecycle)
+2. **Part 2** — Gap analysis (executive summary, strengths, gaps, compliance)
+3. **Part 3** — Recommendations and roadmap
+
+Navigate with arrow keys · **F** for fullscreen · **Esc** for slide overview.
+
+Also available as `.pptx`: `Bhutan-ISO-19160-2-Gap-Analysis-Presentation.pptx` — regenerate with `python3 scripts/build_presentation.py`
 
 ## Repository contents
 
