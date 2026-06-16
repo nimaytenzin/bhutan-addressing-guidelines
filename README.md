@@ -2,11 +2,11 @@
 
 National addressing documentation for Bhutan, aligned with **ISO 19160** (Parts 1–4).
 
-## Interactive report (GitHub Pages)
+## Gap analysis report (GitHub Pages)
 
 **Live site:** https://nimaytenzin.github.io/bhutan-addressing-guidelines/
 
-The interactive web report covers the **Bhutan National Addressing Infrastructure Framework (BNAIF)** — urban and rural addressing, UAI, governance, ADMS, and ISO compliance.
+Google Docs–styled web view of the **ISO 19160-2 Gap Analysis** for the Bhutan City Addressing Guideline.
 
 ## Repository contents
 
