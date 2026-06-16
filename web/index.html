@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bhutan National Addressing Infrastructure Framework — Interactive Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface2: #243044;
+      --border: #2d3f56;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #f4a024;
+      --accent2: #d4af37;
+      --green: #3dd68c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --blue: #60a5fa;
+      --sidebar-w: 280px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+    #sidebar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 100;
+      padding: 1.25rem 0;
+    }
+    .logo {
+      padding: 0 1.25rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .logo h1 { font-size: 0.95rem; color: var(--accent); font-weight: 700; line-height: 1.3; }
+    .logo p { font-size: 0.75rem; color: var(--muted); margin-top: 0.35rem; }
+    .badge {
+      display: inline-block;
+      background: var(--surface2);
+      color: var(--accent2);
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      border: 1px solid var(--border);
+    }
+    nav a {
+      display: block;
+      padding: 0.45rem 1.25rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    nav a:hover, nav a.active {
+      color: var(--text);
+      background: var(--surface2);
+      border-left-color: var(--accent);
+    }
+    nav .section-label {
+      padding: 0.75rem 1.25rem 0.25rem;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    #search-box {
+      margin: 0 1rem 1rem;
+      width: calc(100% - 2rem);
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+    #main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 2rem 2.5rem 4rem;
+      max-width: 1100px;
+    }
+    .hero {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .hero h2 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .hero .meta { color: var(--muted); font-size: 0.9rem; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .kpi {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .kpi .val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .kpi .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 1rem;
+    }
+    section h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+    section h3 { font-size: 1.05rem; margin: 1.25rem 0 0.75rem; color: var(--accent2); }
+    p { margin-bottom: 0.75rem; color: var(--text); }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 1rem 0;
+    }
+    th, td {
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th { background: var(--surface2); color: var(--accent2); font-weight: 600; }
+    tr:hover td { background: rgba(244, 160, 36, 0.05); }
+    .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .mermaid { background: var(--surface); border-radius: 8px; padding: 1rem; margin: 1rem 0; overflow-x: auto; }
+    code {
+      background: var(--bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--green);
+    }
+    .status-yes { color: var(--green); font-weight: 600; }
+    .status-partial { color: var(--yellow); font-weight: 600; }
+    .status-no { color: var(--red); font-weight: 600; }
+    .process-step {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .step-num {
+      min-width: 36px; height: 36px;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem;
+    }
+    .calc-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 700px) { .calc-box { grid-template-columns: 1fr; } }
+    .calc-box input, .calc-box select {
+      width: 100%;
+      padding: 0.6rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      margin-top: 0.35rem;
+    }
+    .calc-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--bg);
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+    }
+    .example-card {
+      border-left: 4px solid var(--blue);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .example-card .addr { font-family: monospace; font-size: 1rem; color: var(--green); }
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .class-chip {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .class-chip:hover, .class-chip.selected {
+      border-color: var(--accent);
+      background: rgba(244, 160, 36, 0.1);
+    }
+    .class-chip .code { font-family: monospace; color: var(--accent); font-size: 0.8rem; }
+    .class-chip .desc { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    #class-detail { margin-top: 1rem; }
+    .hidden { display: none !important; }
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      z-index: 200;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); transition: transform 0.2s; }
+      #sidebar.open { transform: translateX(0); }
+      #main { margin-left: 0; padding: 1.5rem 1rem 3rem; padding-top: 3.5rem; }
+      .menu-toggle { display: block; }
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ Menu</button>
+
+  <aside id="sidebar">
+    <div class="logo">
+      <h1>🇧🇹 BNAIF Interactive Report</h1>
+      <p>Bhutan National Addressing Infrastructure Framework</p>
+      <span class="badge">Draft v1.0 · ISO 19160</span>
+    </div>
+    <input type="search" id="search-box" placeholder="Search sections…" oninput="filterNav(this.value)">
+    <nav id="nav">
+      <div class="section-label">Overview</div>
+      <a href="#overview">Executive Summary</a>
+      <a href="#vision">Vision & KPIs</a>
+      <a href="#coverage">Coverage Model</a>
+      <div class="section-label">Address System</div>
+      <a href="#classes">Address Classes</a>
+      <a href="#uai">UAI Scheme</a>
+      <a href="#calculator">Number Calculator</a>
+      <div class="section-label">Implementation</div>
+      <a href="#urban">Urban (Thromde)</a>
+      <a href="#rural">Rural (Gewog)</a>
+      <a href="#signage">Signage</a>
+      <a href="#examples">Examples</a>
+      <div class="section-label">Infrastructure</div>
+      <a href="#adms">ADMS</a>
+      <a href="#governance">Governance</a>
+      <a href="#processes">8 Lifecycle Processes</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#iso">ISO Compliance</a>
+    </nav>
+  </aside>
+
+  <main id="main">
+    <div class="hero" id="overview">
+      <h2>Bhutan National Addressing Infrastructure Framework</h2>
+      <p class="meta">Department of Human Settlement (DHS) · Ministry of Infrastructure and Transport · Royal Government of Bhutan</p>
+      <p style="margin-top:1rem">A complete national addressing standard covering <strong>urban Thromdes</strong> and <strong>rural Dzongkhag / Gewog / Chiwog</strong> areas, aligned with ISO 19160-1, -2, -3, and -4.</p>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="val">12</div><div class="lbl">Address Classes</div></div>
+        <div class="kpi"><div class="val">32</div><div class="lbl">ISO Requirements</div></div>
+        <div class="kpi"><div class="val">8</div><div class="lbl">Lifecycle Processes</div></div>
+        <div class="kpi"><div class="val">10m</div><div class="lbl">Urban Number Unit</div></div>
+        <div class="kpi"><div class="val">50m</div><div class="lbl">Rural Road Unit</div></div>
+      </div>
+    </div>
+
+    <section id="vision">
+      <h2>Vision 2030</h2>
+      <div class="card">
+        <div class="mermaid">
+flowchart TB
+  subgraph vision [BNAIF Vision 2030]
+    V1[Every household has an official address]
+    V2[Every address has a permanent UAI]
+    V3[Authoritative data in national ADMS]
+    V4[Post · EMS · Utilities · Navigation]
+  end
+  subgraph layers [Infrastructure Layers]
+    L1[Policy and Governance]
+    L2[Reference System ISO 19160-1]
+    L3[Assignment Urban and Rural]
+    L4[Physical Signs BSB33]
+    L5[Digital ADMS and API]
+  end
+  vision --> layers
+  L1 --> L2 --> L3 --> L4 --> L5
+        </div>
+      </div>
+    </section>
+
+    <section id="coverage">
+      <h2>Coverage Model</h2>
+      <table>
+        <thead><tr><th>Zone</th><th>Typology</th><th>Authority</th><th>Class Family</th></tr></thead>
+        <tbody>
+          <tr><td>Thromde (urban)</td><td>thoroughfare</td><td>Thromde</td><td><code>BT_Urban*</code></td></tr>
+          <tr><td>Thromde fringe</td><td>thoroughfare + area</td><td>Thromde + Gewog</td><td><code>BT_RuralTransition</code></td></tr>
+          <tr><td>Gewog centre</td><td>thoroughfare / area</td><td>Gewog</td><td><code>BT_RuralTown</code></td></tr>
+          <tr><td>Rural settlement</td><td>area</td><td>Gewog / Gup</td><td><code>BT_RuralChiwog</code></td></tr>
+          <tr><td>Farmstead / isolated</td><td>thoroughfare</td><td>Gewog</td><td><code>BT_RuralDistance</code></td></tr>
+          <tr><td>National highway</td><td>thoroughfare</td><td>MoIT / DST</td><td><code>BT_Highway</code></td></tr>
+        </tbody>
+      </table>
+      <h3>Strategic KPI Targets</h3>
+      <table>
+        <thead><tr><th>KPI</th><th>Pilot (Y1–2)</th><th>Phase 2 (Y3–4)</th><th>National (Y5+)</th></tr></thead>
+        <tbody>
+          <tr><td>Thromdes with live ADMS</td><td>2</td><td>6</td><td>All</td></tr>
+          <tr><td>Gewogs with rural SOP</td><td>4</td><td>20</td><td>All</td></tr>
+          <tr><td>Addresses with UAI</td><td>25,000</td><td>150,000</td><td>100%</td></tr>
+          <tr><td>ADMS update SLA</td><td>≤ 7 days</td><td>≤ 3 days</td><td>≤ 24 h</td></tr>
+          <tr><td>Data completeness</td><td>≥ 85%</td><td>≥ 92%</td><td>≥ 98%</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="classes">
+      <h2>Address Class Explorer</h2>
+      <p>Click a class to view details. All classes profile ISO 19160-1 typologies for Bhutan.</p>
+      <div class="class-grid" id="class-grid"></div>
+      <div class="card" id="class-detail"></div>
+    </section>
+
+    <section id="uai">
+      <h2>Unique Address Identifier (UAI)</h2>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('uai','urban')">Urban</button>
+        <button class="tab-btn" onclick="showTab('uai','rural-c')">Rural Chiwog</button>
+        <button class="tab-btn" onclick="showTab('uai','rural-d')">Rural Distance</button>
+      </div>
+      <div id="uai-urban" class="tab-panel active">
+        <div class="card">
+          <h3>Urban UAI Structure</h3>
+          <code>BT-{TH}-{LOC}-{BLD}-{SEQ}[-{UNIT}]</code>
+          <table style="margin-top:1rem">
+            <tr><th>Segment</th><th>Example</th><th>Meaning</th></tr>
+            <tr><td>BT</td><td>BT</td><td>Country code</td></tr>
+            <tr><td>TH</td><td>TH</td><td>Thromde (Thimphu)</td></tr>
+            <tr><td>LOC</td><td>CH</td><td>Locality (Changjiji)</td></tr>
+            <tr><td>BLD</td><td>0124</td><td>Building number</td></tr>
+            <tr><td>SEQ</td><td>0001</td><td>Sequence</td></tr>
+            <tr><td>UNIT</td><td>U05</td><td>Unit suffix (optional)</td></tr>
+          </table>
+          <p style="margin-top:1rem"><strong>Example:</strong> <code>BT-TH-CH-0124-0001</code> → 124 Chang Lam, Changjiji, Thimphu</p>
+        </div>
+      </div>
+      <div id="uai-rural-c" class="tab-panel">
+        <div class="card">
+          <h3>Rural Chiwog UAI</h3>
+          <code>BT-{DZ}-{GW}-{CW}-{HNO}-{SEQ}</code>
+          <p style="margin-top:1rem"><strong>Example:</strong> <code>BT-PG-NN-BM-0012-0001</code></p>
+          <p>House 12, Bemithang Chiwog, Nanong Gewog, Pemagatshel</p>
+        </div>
+      </div>
+      <div id="uai-rural-d" class="tab-panel">
+        <div class="card">
+          <h3>Rural Distance UAI</h3>
+          <code>BT-{DZ}-{GW}-{RD}-{HNO}-{SEQ}</code>
+          <p style="margin-top:1rem"><strong>Example:</strong> <code>BT-CK-CP-GR-0035-0001</code></p>
+          <p>House 35, Chapcha Gewog Rd, Chapcha Gewog, Chukha</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculator">
+      <h2>Distance Number Calculator</h2>
+      <div class="card calc-box">
+        <div>
+          <label>Mode</label>
+          <select id="calc-mode" onchange="calcNumber()">
+            <option value="urban-even">Urban — Even (10m unit)</option>
+            <option value="urban-odd">Urban — Odd (10m unit)</option>
+            <option value="rural-even">Rural — Even (50m unit)</option>
+            <option value="rural-odd">Rural — Odd (50m unit)</option>
+          </select>
+        </div>
+        <div>
+          <label>Building / House Number</label>
+          <input type="number" id="calc-num" value="124" min="1" oninput="calcNumber()">
+        </div>
+      </div>
+      <div class="calc-result" id="calc-result"></div>
+    </section>
+
+    <section id="urban">
+      <h2>Part I — Urban Addressing (Thromde)</h2>
+      <div class="mermaid">
+flowchart LR
+  RP[Reference Point] --> BL[Baseline Roads]
+  BL --> Q1[NE] & Q2[SE] & Q3[SW] & Q4[NW]
+      </div>
+      <h3>10 m Hybrid Valley Numbering</h3>
+      <table>
+        <tr><th>Rule</th><th>Specification</th></tr>
+        <tr><td>Unit</td><td>10 metres along street centreline</td></tr>
+        <tr><td>Odd / Even</td><td>Left = Odd · Right = Even (from reference)</td></tr>
+        <tr><td>Even formula</td><td>Distance = (No ÷ 2) × 10 m</td></tr>
+        <tr><td>Odd formula</td><td>Distance = [(No + 1) ÷ 2] × 10 m</td></tr>
+        <tr><td>Street suffix</td><td>Thromde = <strong>Lam</strong> · Highway = Hwy · Dzongkhag = Rd</td></tr>
+        <tr><td>Multi-building plot</td><td>Same number + suffix A, B, C</td></tr>
+      </table>
+      <h3>Street Naming Eligibility</h3>
+      <table>
+        <tr><th>Step</th><th>Check</th><th>If No</th></tr>
+        <tr><td>1</td><td>Publicly accessible?</td><td>No name — private driveway</td></tr>
+        <tr><td>2</td><td>Access to buildings?</td><td>Name optional</td></tr>
+        <tr><td>3</td><td>&gt;1 building AND &gt;50 m?</td><td>Use primary street address</td></tr>
+        <tr><td>4</td><td>All yes</td><td><strong>Assign street name</strong></td></tr>
+      </table>
+    </section>
+
+    <section id="rural">
+      <h2>Part II — Rural Addressing</h2>
+      <div class="mermaid">
+flowchart TD
+  START[New rural structure]
+  Q1{In chiwog settlement?}
+  Q2{On gewog road far from cluster?}
+  START --> Q1
+  Q1 -->|Yes| RC[BT_RuralChiwog]
+  Q1 -->|No| Q2
+  Q2 -->|Yes| RD[BT_RuralDistance]
+  Q2 -->|No| RL[BT_RuralLandmark temporary]
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('rural','chiwog')">Chiwog-based</button>
+        <button class="tab-btn" onclick="showTab('rural','distance')">Distance-based</button>
+      </div>
+      <div id="rural-chiwog" class="tab-panel active">
+        <div class="card">
+          <h3>BT_RuralChiwog — Primary rural class</h3>
+          <p class="addr">House 12, Bemithang Chiwog, Nanong Gewog, Pemagatshel Dzongkhag, Bhutan</p>
+          <ul style="margin-top:0.75rem;padding-left:1.25rem;color:var(--muted)">
+            <li>House numbers sequential within chiwog (gaps of 2 for infill)</li>
+            <li>Authority: Gewog administration / Gup office</li>
+            <li>Physical: house plate + chiwog signboard + finger posts</li>
+          </ul>
+        </div>
+      </div>
+      <div id="rural-distance" class="tab-panel">
+        <div class="card">
+          <h3>BT_RuralDistance — Farmsteads along gewog roads</h3>
+          <p class="addr">House 35, Chapcha Gewog Rd, Chapcha Gewog, Chukha Dzongkhag, Bhutan</p>
+          <ul style="margin-top:0.75rem;padding-left:1.25rem;color:var(--muted)">
+            <li>50 m unit from gewog road origin (cf. AS/NZS 4819 rural)</li>
+            <li>For structures &gt;200 m from chiwog cluster</li>
+            <li>Position at farm track meeting gewog road</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="signage">
+      <h2>Physical Identifiers & Signage (BSB33)</h2>
+      <table>
+        <thead><tr><th>Sign Type</th><th>Zone</th><th>Specification</th></tr></thead>
+        <tbody>
+          <tr><td>Street name (DS)</td><td>Urban</td><td>Blue (Thromde) / Green (Hwy); Dzongkha above English</td></tr>
+          <tr><td>Building number plate</td><td>Urban</td><td>Black/gold; at main entrance</td></tr>
+          <tr><td>Unit plate</td><td>Urban</td><td>Black/white; at unit entrance</td></tr>
+          <tr><td>Chiwog finger post</td><td>Rural</td><td>At gewog road junctions</td></tr>
+          <tr><td>House plate</td><td>Rural</td><td>House no. + chiwog name (Dzongkha primary)</td></tr>
+          <tr><td>Retroreflective</td><td>All</td><td>ASTM Type III/IV prismatic sheet</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="examples">
+      <h2>Address Examples</h2>
+      <div class="example-card card">
+        <strong>Urban Formal</strong> · <code>BT_UrbanFormal</code>
+        <div class="addr">124 Chang Lam, Changjiji, Thimphu, Bhutan</div>
+        <div style="font-size:0.8rem;color:var(--muted)">UAI: BT-TH-CH-0124-0001</div>
+      </div>
+      <div class="example-card card">
+        <strong>Urban Unit</strong> · <code>BT_UrbanUnit</code>
+        <div class="addr">Level 1 — Unit 05, 87 Phenday Lam, Kabraytar, Phuentsholing, Bhutan</div>
+        <div style="font-size:0.8rem;color:var(--muted)">UAI: BT-PH-PD-0087-0001-U05</div>
+      </div>
+      <div class="example-card card">
+        <strong>Rural Chiwog</strong> · <code>BT_RuralChiwog</code>
+        <div class="addr">House 12, Bemithang Chiwog, Nanong Gewog, Pemagatshel, Bhutan</div>
+        <div style="font-size:0.8rem;color:var(--muted)">UAI: BT-PG-NN-BM-0012-0001</div>
+      </div>
+      <div class="example-card card">
+        <strong>Rural Distance</strong> · <code>BT_RuralDistance</code>
+        <div class="addr">House 35, Chapcha Gewog Rd, Chapcha Gewog, Chukha, Bhutan</div>
+        <div style="font-size:0.8rem;color:var(--muted)">UAI: BT-CK-CP-GR-0035-0001 · 875 m from origin</div>
+      </div>
+    </section>
+
+    <section id="adms">
+      <h2>Address Data Management System (ADMS)</h2>
+      <div class="mermaid">
+flowchart TB
+  subgraph national [National DHS]
+    NAD[National Address Database]
+    API[API Gateway]
+    REG[UAI Registry]
+  end
+  subgraph local [Local]
+    TAD[Thromde ADMS]
+    GAD[Gewog ADMS]
+  end
+  subgraph ext [Subscribers]
+    POST[Bhutan Post]
+    EMS[Emergency Services]
+    NLCS[NLCS Cadastre]
+  end
+  TAD & GAD --> NAD
+  NAD --> API
+  API --> POST & EMS & NLCS
+      </div>
+      <table>
+        <tr><th>Function</th><th>Requirement</th></tr>
+        <tr><td>Lifecycle CRUD</td><td>proposed → current → retired</td></tr>
+        <tr><td>Locale</td><td>Bilingual dz_BT + en_BT records</td></tr>
+        <tr><td>Geometry</td><td>Entrance point + optional footprint</td></tr>
+        <tr><td>API</td><td>REST — GeoJSON, GML, CSV export</td></tr>
+        <tr><td>Update SLA</td><td>≤ 7 days post-approval (target 24 h)</td></tr>
+      </table>
+    </section>
+
+    <section id="governance">
+      <h2>Governance Framework</h2>
+      <div class="mermaid">
+flowchart TB
+  NAS[National Addressing Strategy]
+  NAP[National Addressing Policy]
+  BNAIF[BNAIF Technical Framework]
+  TBL[Thromde By-laws]
+  GSL[Gewog SOPs]
+  NAS --> NAP --> BNAIF
+  BNAIF --> TBL & GSL
+      </div>
+      <h3>Key Stakeholders</h3>
+      <table>
+        <tr><th>Agency</th><th>Role</th></tr>
+        <tr><td>DHS / MoIT</td><td>National policy, UAI registry, NAD</td></tr>
+        <tr><td>Thromdes</td><td>Urban assignment, signage, local ADMS</td></tr>
+        <tr><td>Gewogs</td><td>Rural chiwog numbering, house plates</td></tr>
+        <tr><td>NLCS</td><td>Cadastre crosswalk, parcel verification</td></tr>
+        <tr><td>Bhutan Post</td><td>Postcode, postal template, mail routes</td></tr>
+        <tr><td>DDC</td><td>Dzongkha names, transliteration</td></tr>
+        <tr><td>BSB</td><td>Signage material standards (BSB33)</td></tr>
+      </table>
+    </section>
+
+    <section id="processes">
+      <h2>8 Lifecycle Processes (ISO 19160-2)</h2>
+      <div class="mermaid">
+flowchart TD
+  P1[1 Initiation] --> P2[2 Consultation]
+  P2 --> P3[3 Propose Values]
+  P3 --> P4[4 Approval]
+  P4 --> P5[5 Announcement]
+  P4 --> P6[6 Physical Communication]
+  P4 --> P7[7 Update Dataset]
+  P7 --> P8[8 Distribution]
+      </div>
+      <div id="process-list"></div>
+    </section>
+
+    <section id="roadmap">
+      <h2>Implementation Roadmap</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>Timeline</th><th>Milestone</th></tr></thead>
+        <tbody>
+          <tr><td>Foundation</td><td>2026 H1</td><td>BNAIF adopted; National Addressing Policy</td></tr>
+          <tr><td>Pilot</td><td>2026 H2 – 2027</td><td>Thimphu + Phuentsholing + 4 gewogs</td></tr>
+          <tr><td>Scale</td><td>2027 – 2028</td><td>NAD API v1; 6 Thromdes; 50 gewogs</td></tr>
+          <tr><td>National</td><td>2029 – 2032</td><td>Full coverage; ISO conformance audit</td></tr>
+        </tbody>
+      </table>
+      <h3>Pilot Sites</h3>
+      <table>
+        <tr><th>Pilot</th><th>Location</th><th>Scope</th></tr>
+        <tr><td>Urban A</td><td>Thimphu — Changjiji / Norzin</td><td>5,000 addresses</td></tr>
+        <tr><td>Urban B</td><td>Phuentsholing — Kabraytar</td><td>3,000 addresses</td></tr>
+        <tr><td>Rural A</td><td>Pemagatshel — Nanong gewog</td><td>800 households</td></tr>
+        <tr><td>Rural B</td><td>Chukha — Chapcha gewog</td><td>400 farmsteads</td></tr>
+      </table>
+    </section>
+
+    <section id="iso">
+      <h2>ISO 19160-2 Compliance Overview</h2>
+      <p>Prior gap analysis vs City Guideline alone. BNAIF addresses all blocking gaps.</p>
+      <table>
+        <thead><tr><th>Area</th><th>Before (City Guideline)</th><th>After (BNAIF)</th></tr></thead>
+        <tbody>
+          <tr><td>Address reference system</td><td class="status-no">Missing</td><td class="status-yes">§6 — 12 classes</td></tr>
+          <tr><td>Governance processes</td><td class="status-no">0 of 8</td><td class="status-yes">§16 — full RACI</td></tr>
+          <tr><td>ADMS specification</td><td class="status-no">Not defined</td><td class="status-yes">§12 architecture</td></tr>
+          <tr><td>UAI</td><td class="status-no">Future</td><td class="status-yes">§9 mandatory</td></tr>
+          <tr><td>Rural addressing</td><td class="status-no">Not defined</td><td class="status-yes">§8 full profile</td></tr>
+          <tr><td>Data licensing</td><td class="status-no">Missing</td><td class="status-yes">§18 CC BY tiers</td></tr>
+          <tr><td>Pilot requirement</td><td class="status-no">None</td><td class="status-yes">§20 4-site pilot</td></tr>
+          <tr><td>Signage standards</td><td class="status-yes">Strong (BSB33)</td><td class="status-yes">§11 retained + rural</td></tr>
+          <tr><td>Urban numbering</td><td class="status-yes">10 m hybrid</td><td class="status-yes">§7 formalized</td></tr>
+        </tbody>
+      </table>
+      <h3>Conformance Score (City Guideline baseline)</h3>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="val status-yes">5</div><div class="lbl">Requirements Met</div></div>
+        <div class="kpi"><div class="val status-partial">11</div><div class="lbl">Partial</div></div>
+        <div class="kpi"><div class="val status-no">16</div><div class="lbl">Not Met</div></div>
+        <div class="kpi"><div class="val">32</div><div class="lbl">Total ISO Reqs</div></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Bhutan National Addressing Infrastructure Framework v1.0-draft · June 2026</p>
+      <p>DHS · MoIT · Royal Government of Bhutan · Aligned with ISO 19160-1, -2, -3, -4</p>
+      <p style="margin-top:0.5rem">
+        <a href="https://github.com/nimaytenzin/bhutan-addressing-guidelines" style="color:var(--accent)">GitHub repository</a>
+        · Interactive report · For official adoption, refer to published RGoB documents.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { primaryColor: '#f4a024', primaryTextColor: '#e8edf4', primaryBorderColor: '#2d3f56', lineColor: '#8b9cb3', secondaryColor: '#1a2332', tertiaryColor: '#243044' }});
+
+    const ADDRESS_CLASSES = [
+      { code: 'BT_UrbanFormal', zone: 'Urban', typology: 'thoroughfare', desc: 'Standard street-front building in Thromde', example: '124 Chang Lam, Changjiji, Thimphu', uai: 'BT-TH-CH-0124-0001', components: 'buildingNumber, thoroughfareName, localityName, thromdeName, uai' },
+      { code: 'BT_UrbanUnit', zone: 'Urban', typology: 'thoroughfare', desc: 'Apartment/office within parent building', example: 'Level 1 — Unit 05, 87 Phenday Lam, Phuentsholing', uai: 'BT-PH-PD-0087-0001-U05', components: 'floorLevel, unitNumber + inherited parent' },
+      { code: 'BT_Institutional', zone: 'Urban', typology: 'thoroughfare', desc: 'Hospital, school, monastery campus', example: '50 Dechencholing Lam, Thimphu (+ suffix blocks)', uai: 'BT-TH-MG-0050-0001', components: 'main entrance; internal suffixes' },
+      { code: 'BT_Provisional', zone: 'Urban', typology: 'thoroughfare', desc: 'Temporary/informal — unofficial status', example: 'P-23, emerging block, Thimphu', uai: 'BT-TH-EM-0023-0001', components: 'minimal; service delivery only' },
+      { code: 'BT_AliasSecondary', zone: 'Urban', typology: 'thoroughfare', desc: 'Corner building alternate street', example: '45 Gongphel Lam (alias of Norzin Lam)', uai: 'shared with primary', components: 'shared UAI; preferenceLevel 1/2' },
+      { code: 'BT_RuralChiwog', zone: 'Rural', typology: 'area', desc: 'Primary rural — chiwog + house number', example: 'House 12, Bemithang Chiwog, Nanong Gewog', uai: 'BT-PG-NN-BM-0012-0001', components: 'houseNumber, chiwogName, gewogName, dzongkhagName' },
+      { code: 'BT_RuralDistance', zone: 'Rural', typology: 'thoroughfare', desc: 'Farmstead along gewog road (50m unit)', example: 'House 35, Chapcha Gewog Rd, Chukha', uai: 'BT-CK-CP-GR-0035-0001', components: 'houseNumber, thoroughfareName, gewogName' },
+      { code: 'BT_RuralTown', zone: 'Rural', typology: 'mixed', desc: 'Gewog centre with named streets', example: 'Gewog HQ small town addressing', uai: 'BT-{DZ}-{GW}-...', components: 'urban-style or chiwog hybrid' },
+      { code: 'BT_RuralTransition', zone: 'Fringe', typology: 'mixed', desc: 'Peri-urban Thromde buffer zone', example: 'Extends urban 10m numbering gradually', uai: 'single UAI on formalization', components: 'transitional' },
+      { code: 'BT_Highway', zone: 'Highway', typology: 'thoroughfare', desc: 'Roadside facilities on AH/PNH/SNH', example: 'Fuel station, km chainage', uai: 'BT-{DZ}-HW-...', components: 'highway designation + number' },
+      { code: 'BT_RuralLandmark', zone: 'Rural', typology: 'area', desc: 'Temporary EMS addressing — promote within 12mo', example: 'Near community lhakhang', uai: 'BT-...-LM-...', components: 'landmark + chiwog' },
+      { code: 'BT_RuralPostal', zone: 'Rural', typology: 'service', desc: 'Bhutan Post mail route addressing', example: 'Mailtown + route code', uai: 'linked to delivery point', components: 'postOfficeName, mailRouteCode' },
+    ];
+
+    const PROCESSES = [
+      { n: 1, name: 'Initiation', sla: '2–5 days', desc: 'Trigger: building permit, subdivision, rural registration. Log in ADMS as proposed.' },
+      { n: 2, name: 'Consultation', sla: '21 days', desc: 'Public notice for street names, renames, chiwog boundary changes. DDC + residents.' },
+      { n: 3, name: 'Propose Values', sla: '—', desc: 'Thromde/Gewog proposes name and number via ADMS form with GIS validation.' },
+      { n: 4, name: 'Approval', sla: '30 days', desc: 'Thromde committee or Gup + tshogde approves/rejects. Appeal path defined.' },
+      { n: 5, name: 'Announcement', sla: '7 days', desc: 'National Address Portal, Royal Gazette, gewog notice board.' },
+      { n: 6, name: 'Physical Communication', sla: '90 days', desc: 'Install street/building/house signs. Thromde or Gewog inspection.' },
+      { n: 7, name: 'Update Dataset', sla: '7 days', desc: 'ADMS → current; geometry published; version increment.' },
+      { n: 8, name: 'Distribution', sla: '24 h', desc: 'Push to Bhutan Post, EMS, NLCS, utilities, API subscribers.' },
+    ];
+
+    function renderClasses() {
+      const grid = document.getElementById('class-grid');
+      grid.innerHTML = ADDRESS_CLASSES.map((c, i) =>
+        `<div class="class-chip" data-idx="${i}" onclick="selectClass(${i})">
+          <div class="code">${c.code}</div>
+          <div class="desc">${c.zone} · ${c.typology}</div>
+        </div>`
+      ).join('');
+      selectClass(0);
+    }
+
+    function selectClass(i) {
+      document.querySelectorAll('.class-chip').forEach((el, j) => el.classList.toggle('selected', j === i));
+      const c = ADDRESS_CLASSES[i];
+      document.getElementById('class-detail').innerHTML = `
+        <h3>${c.code}</h3>
+        <p>${c.desc}</p>
+        <table>
+          <tr><th>Zone</th><td>${c.zone}</td></tr>
+          <tr><th>ISO Typology</th><td>${c.typology}</td></tr>
+          <tr><th>Components</th><td>${c.components}</td></tr>
+          <tr><th>Example</th><td class="addr">${c.example}</td></tr>
+          <tr><th>UAI</th><td><code>${c.uai}</code></td></tr>
+        </table>`;
+    }
+
+    function renderProcesses() {
+      document.getElementById('process-list').innerHTML = PROCESSES.map(p => `
+        <div class="process-step card">
+          <div class="step-num">${p.n}</div>
+          <div><strong>${p.name}</strong> <span style="color:var(--muted);font-size:0.85rem">SLA: ${p.sla}</span><br>${p.desc}</div>
+        </div>`).join('');
+    }
+
+    function showTab(group, id) {
+      const panels = document.querySelectorAll(`[id^="${group}-"]`);
+      panels.forEach(p => p.classList.remove('active'));
+      document.getElementById(`${group}-${id}`).classList.add('active');
+      const section = document.getElementById(group);
+      section.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        const ids = group === 'uai' ? ['urban','rural-c','rural-d'] : ['chiwog','distance'];
+        btn.classList.toggle('active', ids[i] === id);
+      });
+    }
+
+    function calcNumber() {
+      const mode = document.getElementById('calc-mode').value;
+      const num = parseInt(document.getElementById('calc-num').value) || 0;
+      let dist, unit;
+      if (mode.includes('urban')) { unit = 10; dist = mode.includes('even') ? (num/2)*10 : ((num+1)/2)*10; }
+      else { unit = 50; dist = mode.includes('even') ? (num/2)*50 : ((num+1)/2)*50; }
+      document.getElementById('calc-result').innerHTML = num > 0
+        ? `<strong>House/Building ${num}</strong> is approximately <strong>${dist} m</strong> from the reference point (${unit} m unit, ${mode.includes('even')?'even':'odd'} side).`
+        : 'Enter a valid number.';
+    }
+
+    function filterNav(q) {
+      q = q.toLowerCase();
+      document.querySelectorAll('#nav a').forEach(a => {
+        a.classList.toggle('hidden', q && !a.textContent.toLowerCase().includes(q));
+      });
+    }
+
+    // Active nav on scroll
+    const sections = document.querySelectorAll('section, .hero');
+    const navLinks = document.querySelectorAll('#nav a');
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      sections.forEach(s => { if (scrollY >= s.offsetTop - 120) cur = s.id; });
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+    });
+
+    renderClasses();
+    renderProcesses();
+    calcNumber();
+  </script>
+</body>
+</html>

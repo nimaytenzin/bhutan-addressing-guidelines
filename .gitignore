@@ -1,0 +1,12 @@
+# ISO standard PDFs (large binaries — obtain from ISO/BSB separately)
+*.pdf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (if used locally)
+node_modules/
