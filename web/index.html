@@ -19,7 +19,7 @@
       --muted: #5c5c5c;
       --accent: #2563eb;
       --border: #e0ddd6;
-      --read-max: 72ch;
+      --page-pad: clamp(1.25rem, 3vw, 3rem);
       --toc-width: 280px;
       --header-h: 52px;
     }
@@ -140,9 +140,9 @@
     }
 
     .content {
-      max-width: min(var(--read-max), calc(100vw - 3rem));
-      margin: 0 auto;
-      padding: 3rem 1.5rem 5rem;
+      width: 100%;
+      max-width: none;
+      padding: 3rem var(--page-pad) 5rem;
     }
 
     /* Typography */
@@ -203,10 +203,20 @@
     }
     .content pre code { background: none; padding: 0; }
 
-    .content table {
+    .table-wrap {
+      display: flex;
+      justify-content: center;
       width: 100%;
-      border-collapse: collapse;
+      overflow-x: auto;
       margin: 0 0 1.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .content table {
+      width: auto;
+      max-width: 100%;
+      border-collapse: collapse;
+      margin: 0;
       font-size: 0.9375rem;
       line-height: 1.5;
     }
@@ -238,13 +248,9 @@
       color: var(--muted);
     }
 
-    @media (min-width: 1200px) {
-      :root { --read-max: 78ch; }
-    }
-
     @media (max-width: 600px) {
       body { font-size: 1.0625rem; }
-      .content { padding: 2rem 1.25rem 4rem; }
+      .content { padding: 2rem var(--page-pad) 4rem; }
       .header-title { display: none; }
     }
 
@@ -343,6 +349,12 @@
         const res = await fetch('gap-analysis.md');
         if (!res.ok) throw new Error('Failed to load');
         el.innerHTML = marked.parse(await res.text());
+        el.querySelectorAll('table').forEach(table => {
+          const wrap = document.createElement('div');
+          wrap.className = 'table-wrap';
+          table.parentNode.insertBefore(wrap, table);
+          wrap.appendChild(table);
+        });
         el.querySelectorAll('h1').forEach(h => { if (!h.id) h.id = slugify(h.textContent); });
         buildToc(el);
         await mermaid.run({ querySelector: '.content .mermaid' });
